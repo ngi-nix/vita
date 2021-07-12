@@ -1,7 +1,7 @@
 # vita
 
-upstream: https://github.com/inters/vita
-ngi-nix: https://github.com/ngi-nix/ngi/issues/82 
+- upstream: https://github.com/inters/vita
+- ngi-nix: https://github.com/ngi-nix/ngi/issues/82
 
 vita is a userspace VPN which operates at L3, kind of like IPSEC of wireguard.
 
