@@ -5,7 +5,7 @@
 
   outputs = { nixpkgs, self }:
     let
-      supportedSystems = [ "x86_64-linux" ];
+      supportedSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
       forAllSystems' = systems: fun: nixpkgs.lib.genAttrs systems fun;
       forAllSystems = forAllSystems' supportedSystems;
     in
@@ -33,6 +33,10 @@
         in
           pkgs.vita
       );
+
+      hydraJobs = forAllSystems (system: {
+        build = self.defaultPackage.${system};
+      });
 
       nixosConfigurations = forAllSystems (system:
         nixpkgs.lib.nixosSystem {
