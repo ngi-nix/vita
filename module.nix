@@ -124,16 +124,11 @@ in
   config = mkIf cfg.enable {
     systemd.services = mapAttrs' (n: v: nameValuePair "vita-${n}"
       { description = "Vita instance ${n}";
-
-        wantedBy = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
 
         serviceConfig = {
-          ExecStart = ''
-            ${cfg.package}/bin/vita \
-              --name ${n} \
-              ${if v.xdp then "--xdp" else ""} \
-              ${if v.cpus != null then "--cpu " + (concatMapStringsSep "," (x: toString x) v.cpus) else ""}
-          '';
+          ExecStart = "${cfg.package}/bin/vita --name ${n} ${if v.xdp then "--xdp" else ""} ${if v.cpus != null then "--cpu " + (concatMapStringsSep "," (x: toString x) v.cpus) else ""}";
           ExecStartPost = pkgs.writeShellScript "vita-post-start" ''
             timeout=60
 
@@ -147,12 +142,19 @@ in
 
               sleep 1
 
+              echo TICK
+
               # Decrease the timeout of one
               ((timeout--))
             done 
             
             ${cfg.package}/bin/snabb config set ${n} / < ${pkgs.writeText "vita-${n}.conf" v.config}
           '';
+          ExecStop = "rm /var/run/snabb/by-name/paris";
+          User = "root";
+          Group = "root";
+          Restart = "always";
+          RestartSec = "5";
         };
       }) cfg.instances;
   };
