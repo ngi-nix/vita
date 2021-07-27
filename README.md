@@ -5,6 +5,8 @@
 
 vita is a userspace VPN which operates at L3, kind of like IPSEC of wireguard.
 
+> :warning: As most Flakes in `nig-ngi` this Flake is a **work in progress**!
+
 ## Using
 
 In order to use this [flake](https://nixos.wiki/wiki/Flakes) you need to have the 
