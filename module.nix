@@ -132,17 +132,15 @@ in
           ExecStartPost = pkgs.writeShellScript "vita-post-start" ''
             timeout=60
 
-            while [[ ! -d /var/run/snabb/by-name/paris/ ]];
+            while [[ ! -d /var/run/snabb/by-name/${name}/ ]];
             do
               # When the timeout is equal to zero, show an error and leave the loop.
               if [[ "$timeout" == 0 ]]; then
-                echo "ERROR: Timeout while waiting for /var/run/snabb/by-name/paris/."
+                echo "ERROR: Timeout while waiting for /var/run/snabb/by-name/${name}/."
                 exit 1
               fi
 
               sleep 1
-
-              echo TICK
 
               # Decrease the timeout of one
               ((timeout--))
@@ -150,7 +148,7 @@ in
             
             ${cfg.package}/bin/snabb config set ${n} / < ${pkgs.writeText "vita-${n}.conf" v.config}
           '';
-          ExecStop = "rm /var/run/snabb/by-name/paris";
+          ExecStop = "rm /var/run/snabb/by-name/${name}";
           User = "root";
           Group = "root";
           Restart = "always";
