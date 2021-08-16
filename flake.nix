@@ -47,12 +47,7 @@
           build = self.defaultPackage.${system};
         });
 
-        devShell = forAllSystems (system:
-          let
-            pkgs = import nixpkgs { inherit system; overlays = mapAttrsToList (_: id) self.overlays; };
-          in
-            pkgs.mkShell {} # according to the upstream derivation vita has no dependencies
-        );
+        devShell = forAllSystems (system: self.packages.${system}.vita);
 
         nixosModule = self.nixosModules.vita;
 
