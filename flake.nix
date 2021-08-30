@@ -43,6 +43,19 @@
           }
         );
 
+        apps = mapAttrs (_: v:
+          mapAttrs (_: a:
+            {
+              type = "app";
+              program = a;
+            }
+          ) v
+        ) self.packages;
+
+        defaultApp = mapAttrs (_: v:
+          v.trydiffoscope
+        ) self.apps;
+
         hydraJobs = forAllSystems (system: {
           build = self.defaultPackage.${system};
         });
